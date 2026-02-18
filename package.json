@@ -1,0 +1,49 @@
+{
+  "name": "e-pds",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.990.0",
+    "@aws-sdk/lib-storage": "^3.990.0",
+    "@aws-sdk/s3-request-presigner": "^3.990.0",
+    "@capacitor-community/bluetooth-le": "^8.1.0",
+    "@capacitor-mlkit/barcode-scanning": "^8.0.0",
+    "@capacitor/core": "^8.1.0",
+    "@emotion/cache": "^11.14.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@google/generative-ai": "^0.24.1",
+    "@mui/icons-material": "^7.3.8",
+    "@mui/material": "^7.3.8",
+    "@mui/material-nextjs": "^7.3.8",
+    "@reduxjs/toolkit": "^2.11.2",
+    "axios": "^1.13.5",
+    "bcrypt": "^6.0.0",
+    "busboy": "^1.6.0",
+    "html5-qrcode": "^2.3.8",
+    "leaflet": "^1.9.4",
+    "mongodb": "^7.1.0",
+    "next": "^16.1.5",
+    "nextjs-toploader": "^3.9.17",
+    "nodemailer": "^8.0.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-hook-form": "^7.71.1",
+    "react-icons": "^5.5.0",
+    "react-leaflet": "^5.0.0",
+    "react-redux": "^9.2.0",
+    "sass": "^1.97.3",
+    "uuid": "^13.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "eslint": "^9",
+    "eslint-config-next": "16.1.5"
+  }
+}
