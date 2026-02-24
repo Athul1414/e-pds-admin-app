@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import "./page.scss";
 
 export default function Brands() {
     const [brands, setBrands] = useState([]);
@@ -16,7 +17,7 @@ export default function Brands() {
     }
 
     return (
-        <div style={{ backgroundColor: 'white', color: 'black', padding: '20px' }}>
+        <div className="brands_page_container">
             <h1>Brands</h1>
             <ul>
                 {brands.map((brand) => (
