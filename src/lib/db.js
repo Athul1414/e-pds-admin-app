@@ -1,4 +1,14 @@
 import { MongoClient } from 'mongodb';
+import dns from 'dns';
+
+// Fix for querySrv ECONNREFUSED on some networks/Windows setups
+if (typeof dns.setServers === 'function') {
+  try {
+    dns.setServers(['8.8.8.8', '1.1.1.1']);
+  } catch (e) {
+    console.warn('Failed to set custom DNS servers:', e);
+  }
+}
 
 const uri = process.env.DB_URI;
 const dbName = process.env.DB;
@@ -16,19 +26,17 @@ export default async function connectToDatabase() {
 
   if (!cached.promise) {
     const client = new MongoClient(uri, {
-      serverSelectionTimeoutMS: 30000, // allow Atlas wake-up
+      serverSelectionTimeoutMS: 30000,
       connectTimeoutMS: 10000,
-      socketTimeoutMS: 0,
-      maxPoolSize: 5, // good for M0
     });
-
     cached.promise = client.connect();
   }
 
   try {
     cached.client = await cached.promise;
   } catch (err) {
-    // retry ONCE (important for Atlas cold starts)
+    console.error('MongoDB connection error:', err.message);
+    // retry ONCE
     cached.promise = null;
 
     const retryClient = new MongoClient(uri, {
