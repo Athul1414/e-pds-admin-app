@@ -70,12 +70,11 @@ export default function CreateProduct() {
                         <label className={styles.label}>Brand</label>
                         <select
                             {...register("brandId", { required: "Brand is required" })}
-                            className={styles.input}
-                            style={{ background: 'rgba(255, 255, 255, 0.05)', color: '#fff' }}
+                            className={styles.select}
                         >
-                            <option value="" style={{ background: '#1a1a2e' }}>Select a Brand</option>
+                            <option value="">Select a Brand</option>
                             {brands.map((brand) => (
-                                <option key={brand._id} value={brand._id} style={{ background: '#1a1a2e' }}>
+                                <option key={brand._id} value={brand._id}>
                                     {brand.brandName}
                                 </option>
                             ))}

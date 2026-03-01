@@ -1,126 +1,311 @@
-.brands_page_container {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
+// Variables for Light Theme
+$bg-primary: #ffffff;
+$bg-secondary: #f3f4f6;
+$bg-toolbar: #f9fafb;
+$border-light: #e5e7eb;
+$text-primary: #111827;
+$text-secondary: #6b7280;
+$accent-dark: #374151;
+$blue-accent: #3b82f6;
+
+.page-wrapper {
     min-height: 100vh;
-    background: #0f172a;
-    color: #f8fafc;
+    background-color: $bg-primary;
+    padding: 2.5rem 3rem;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: $text-primary;
 }
 
-.header {
+.page-header {
+    margin-bottom: 2rem;
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+}
+
+.table-container {
+    background: $bg-primary;
+    border-radius: 8px;
+    // border: 1px solid $border-light;
+}
+
+.toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 3rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 1.5rem;
+
+    .toolbar-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        .search-box {
+            position: relative;
+
+            .search-icon {
+                position: absolute;
+                left: 0.75rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: $text-secondary;
+                font-size: 1.2rem;
+            }
+
+            input {
+                padding: 0.6rem 1rem 0.6rem 2.5rem;
+                background-color: #f1f3f4;
+                border: none;
+                border-radius: 4px;
+                width: 300px;
+                font-size: 0.9rem;
+                outline: none;
+
+                &::placeholder {
+                    color: $text-secondary;
+                }
+            }
+        }
+
+        .filter-dropdown {
+            position: relative;
+
+            select {
+                appearance: none;
+                padding: 0.6rem 2.5rem 0.6rem 1rem;
+                border: 1px solid $border-light;
+                border-radius: 4px;
+                background: $bg-primary;
+                font-size: 0.9rem;
+                font-weight: 500;
+                cursor: pointer;
+                outline: none;
+            }
+
+            &::after {
+                content: '\25BE';
+                position: absolute;
+                right: 0.8rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: $text-secondary;
+                pointer-events: none;
+            }
+
+            .sort-icon {
+                position: absolute;
+                right: 0.8rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: $text-secondary;
+                pointer-events: none;
+            }
+        }
+    }
+
+    .toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+
+        .icon-link-btn {
+            background: none;
+            border: none;
+            color: $text-secondary;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            transition: color 0.2s;
+
+            &:hover {
+                color: $text-primary;
+            }
+
+            svg {
+                font-size: 1.1rem;
+            }
+        }
+
+        .add-btn-primary {
+            background-color: $accent-dark;
+            color: $bg-primary;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: opacity 0.2s;
+
+            &:hover {
+                opacity: 0.9;
+            }
+        }
+    }
 }
 
-.header h1 {
-    font-size: 2.5rem;
-    background: linear-gradient(to right, #60a5fa, #a855f7);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+.table-inner {
+    overflow-x: auto;
 }
 
-.add_btn {
-    background: linear-gradient(to right, #3b82f6, #8b5cf6);
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 10px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.39);
+.brands-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+
+    thead {
+        background-color: $bg-toolbar;
+        border-top: 1px solid $border-light;
+        border-bottom: 1px solid $border-light;
+
+        th {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: $text-secondary;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    }
+
+    tbody {
+        tr {
+            border-bottom: 1px solid $border-light;
+            transition: background-color 0.2s;
+
+            &:hover {
+                background-color: #fafbfc;
+            }
+
+            &.row-selected {
+                background-color: #f3f4f6;
+            }
+
+            td {
+                padding: 1.25rem 1.5rem;
+                vertical-align: middle;
+            }
+        }
+    }
+
+    .checkbox-col {
+        width: 60px;
+
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+    }
+
+    .brand-img-col {
+        width: 100px;
+
+        .brand-thumb-placeholder {
+            width: 54px;
+            height: 54px;
+            background-color: #f1f3f4;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .inner-icon {
+                width: 24px;
+                height: 18px;
+                background-color: #e8eaed;
+                position: relative;
+
+                &::before {
+                    content: '';
+                    position: absolute;
+                    top: -4px;
+                    left: 6px;
+                    width: 6px;
+                    height: 6px;
+                    background-color: #e8eaed;
+                    border-radius: 50%;
+                }
+            }
+        }
+    }
+
+    .brand-name-col {
+        font-size: 1rem;
+        color: $text-primary;
+    }
+
+    .status-col {
+        .pill-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background-color: #f1f3f4;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #5f6368;
+        }
+    }
+
+    .desc-col {
+        max-width: 350px;
+
+        .truncate-text {
+            color: $text-secondary;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .actions-header {
+        text-align: right;
+    }
+
+    .actions-col {
+        .row-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+
+            .row-btn-edit {
+                color: $blue-accent;
+                font-size: 1.3rem;
+
+                &:hover {
+                    opacity: 0.7;
+                }
+            }
+
+            .row-btn-delete {
+                background: none;
+                border: none;
+                color: #ea4335;
+                font-size: 1.3rem;
+                cursor: pointer;
+                padding: 0;
+                display: flex;
+                align-items: center;
+
+                &:hover {
+                    opacity: 0.7;
+                }
+            }
+        }
+    }
 }
 
-.add_btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45);
-}
-
-.brands_grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-
-.brand_card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(8px);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.brand_card:hover {
-    border-color: #3b82f6;
-    background: rgba(255, 255, 255, 0.05);
-    transform: scale(1.02);
-}
-
-.brand_content {
-    flex: 1;
-}
-
-.brand_card h3 {
-    font-size: 1.25rem;
-    margin-bottom: 0.75rem;
-    color: #60a5fa;
-}
-
-.brand_card p {
-    color: #94a3b8;
-    font-size: 0.95rem;
-    line-height: 1.6;
-}
-
-.brand_actions {
-    display: flex;
-    gap: 1rem;
-    margin-left: 1rem;
-}
-
-.edit_icon,
-.delete_icon {
-    font-size: 1.4rem;
-    cursor: pointer;
-    transition: color 0.3s ease;
-    background: none;
-    border: none;
-    padding: 0;
-    display: flex;
-    align-items: center;
-}
-
-.edit_icon {
-    color: #60a5fa;
-}
-
-.edit_icon:hover {
-    color: #3b82f6;
-}
-
-.delete_icon {
-    color: #ef4444;
-}
-
-.delete_icon:hover {
-    color: #dc2626;
-}
-
-.loading,
-.empty_state {
+.table-status-cell {
     text-align: center;
-    margin-top: 5rem;
-    font-size: 1.2rem;
-    color: #94a3b8;
-}
-
-.empty_state p {
-    margin-bottom: 1.5rem;
+    padding: 3rem !important;
+    color: $text-secondary;
+    font-style: italic;
 }

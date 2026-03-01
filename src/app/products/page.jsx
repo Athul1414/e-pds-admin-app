@@ -1,14 +1,24 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { MdEdit, MdDelete } from "react-icons/md";
+import {
+    MdEdit,
+    MdDelete,
+    MdSearch,
+    MdFileUpload,
+    MdFileDownload,
+    MdAdd,
+    MdFilterList
+} from "react-icons/md";
 import "./page.scss";
 
 export default function Products() {
     const [products, setProducts] = useState([]);
     const [brands, setBrands] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedProducts, setSelectedProducts] = useState([]);
 
     useEffect(() => {
         const loadData = async () => {
@@ -33,21 +43,11 @@ export default function Products() {
         return brand ? brand.brandName : "Unknown Brand";
     };
 
-    const fetch_products = async () => {
-        try {
-            const response = await axios.get('/api/products');
-            setProducts(response.data.products || []);
-        } catch (error) {
-            console.error("Error fetching products:", error);
-        }
-    }
-
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this product?")) {
             try {
                 await axios.delete(`/api/products/delete/${id}`);
                 setProducts(products.filter(product => product._id !== id));
-                alert("Product deleted successfully");
             } catch (error) {
                 console.error("Error deleting product:", error);
                 alert("Failed to delete product");
@@ -55,63 +55,153 @@ export default function Products() {
         }
     }
 
+    const toggleSelectAll = () => {
+        if (selectedProducts.length === products.length && products.length > 0) {
+            setSelectedProducts([]);
+        } else {
+            setSelectedProducts(products.map(p => p._id));
+        }
+    };
+
+    const toggleSelectProduct = (id) => {
+        if (selectedProducts.includes(id)) {
+            setSelectedProducts(selectedProducts.filter(pid => pid !== id));
+        } else {
+            setSelectedProducts([...selectedProducts, id]);
+        }
+    };
+
+    const filteredProducts = products.filter(product =>
+        product.productName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
-        <div className="brands_page_container">
-            <header className="header">
-                <h1>Products</h1>
-                <Link href="/products/new" className="add_btn">
-                    + Add New Product
-                </Link>
+        <div className="page-wrapper">
+            <header className="page-header">
+                <h1 className="page-title">Product listing</h1>
             </header>
 
-            {loading ? (
-                <div className="loading">Loading products...</div>
-            ) : products.length > 0 ? (
-                <div className="brands_grid">
-                    {products.map((product) => (
-                        <div key={product._id} className="brand_card">
-                            <div className="brand_content">
-                                <div style={{ marginBottom: '0.2rem' }}>
-                                    <span style={{
-                                        fontSize: '0.75rem',
-                                        background: 'rgba(96, 165, 250, 0.2)',
-                                        color: '#60a5fa',
-                                        padding: '0.2rem 0.6rem',
-                                        borderRadius: '100px',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.5px'
-                                    }}>
-                                        {getBrandName(product.brandId)}
-                                    </span>
-                                </div>
-                                <h3>{product.productName}</h3>
-                                <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-                                    <span style={{ color: '#4caf50', fontWeight: 'bold' }}>₹{product.sellingPrice}</span>
-                                    <span style={{ color: product.stock > 0 ? '#60a5fa' : '#ef4444' }}>
-                                        {product.stock > 0 ? `Stock: ${product.stock}` : 'Out of Stock'}
-                                    </span>
-                                </div>
-                                <p>{product.description}</p>
-                            </div>
-                            <div className="brand_actions">
-                                <Link href={`/products/edit/${product._id}`} className="edit_icon">
-                                    <MdEdit />
-                                </Link>
-                                <button onClick={() => handleDelete(product._id)} className="delete_icon">
-                                    <MdDelete />
-                                </button>
-                            </div>
+            <div className="table-container">
+                {/* Toolbar */}
+                <div className="toolbar">
+                    <div className="toolbar-left">
+                        <div className="search-box">
+                            <MdSearch className="search-icon" />
+                            <input
+                                type="text"
+                                placeholder="Search"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
                         </div>
-                    ))}
+                        <div className="filter-dropdown">
+                            <select>
+                                <option>Active</option>
+                                <option>Inactive</option>
+                            </select>
+                        </div>
+                        <div className="filter-dropdown">
+                            <select>
+                                <option>Newest</option>
+                                <option>Oldest</option>
+                            </select>
+                            <MdFilterList className="sort-icon" />
+                        </div>
+                    </div>
+                    <div className="toolbar-right">
+                        <button className="icon-link-btn"><MdFileUpload /> Export</button>
+                        <button className="icon-link-btn"><MdFileDownload /> Import</button>
+                        <Link href="/products/new" className="add-btn-primary">
+                            <MdAdd /> Add product
+                        </Link>
+                    </div>
                 </div>
-            ) : (
-                <div className="empty_state">
-                    <p>No products found. Start by adding one!</p>
-                    <Link href="/products/new" className="add_btn">
-                        Create First Product
-                    </Link>
+
+                {/* Table */}
+                <div className="table-inner">
+                    <table className="products-table">
+                        <thead>
+                            <tr>
+                                <th className="checkbox-col">
+                                    <input
+                                        type="checkbox"
+                                        checked={products.length > 0 && selectedProducts.length === products.length}
+                                        onChange={toggleSelectAll}
+                                    />
+                                </th>
+                                <th>PRODUCT</th>
+                                <th>NAME</th>
+                                <th>STATUS</th>
+                                <th>VENDOR/BRAND</th>
+                                <th>INVENTORY</th>
+                                <th>PRICE</th>
+                                <th className="actions-header">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="8" className="table-status-cell">Loading products...</td>
+                                </tr>
+                            ) : filteredProducts.length > 0 ? (
+                                filteredProducts.map((product) => (
+                                    <tr key={product._id} className={selectedProducts.includes(product._id) ? "row-selected" : ""}>
+                                        <td className="checkbox-col">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedProducts.includes(product._id)}
+                                                onChange={() => toggleSelectProduct(product._id)}
+                                            />
+                                        </td>
+                                        <td className="product-img-col">
+                                            <div className="product-thumb-placeholder">
+                                                <div className="inner-icon"></div>
+                                            </div>
+                                        </td>
+                                        <td className="product-name-col">
+                                            <strong>{product.productName}</strong>
+                                            <div className="product-desc-sub">{product.description?.substring(0, 40)}...</div>
+                                        </td>
+                                        <td className="status-col">
+                                            <span className={`pill-status ${product.stock > 0 ? 'active' : 'warn'}`}>
+                                                {product.stock > 0 ? 'Active' : 'Out of Stock'}
+                                            </span>
+                                        </td>
+                                        <td className="brand-col">
+                                            {getBrandName(product.brandId)}
+                                        </td>
+                                        <td className="stock-col">
+                                            <span className={product.stock <= 5 ? "low-stock" : ""}>
+                                                {product.stock} in stock
+                                            </span>
+                                        </td>
+                                        <td className="price-col">
+                                            <strong>₹{product.sellingPrice}</strong>
+                                        </td>
+                                        <td className="actions-col">
+                                            <div className="row-actions">
+                                                <Link href={`/products/edit/${product._id}`} className="row-btn-edit" title="Edit">
+                                                    <MdEdit />
+                                                </Link>
+                                                <button onClick={() => handleDelete(product._id)} className="row-btn-delete" title="Delete">
+                                                    <MdDelete />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="8" className="table-status-cell">
+                                        No products found.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
                 </div>
-            )}
+            </div>
         </div>
-    )
+    );
 }

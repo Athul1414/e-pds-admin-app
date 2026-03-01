@@ -73,7 +73,7 @@ export default function EditBrand() {
         return (
             <div className={styles.container}>
                 <div className={styles.card}>
-                    <p style={{ color: '#fff', textAlign: 'center' }}>Loading brand details...</p>
+                    <p style={{ color: '#111827', textAlign: 'center' }}>Loading brand details...</p>
                 </div>
             </div>
         );

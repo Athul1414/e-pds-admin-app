@@ -87,7 +87,7 @@ export default function EditProduct() {
         return (
             <div className={styles.container}>
                 <div className={styles.card}>
-                    <p style={{ color: '#fff', textAlign: 'center' }}>Loading product details...</p>
+                    <p style={{ color: '#111827', textAlign: 'center' }}>Loading product details...</p>
                 </div>
             </div>
         );
@@ -104,12 +104,11 @@ export default function EditProduct() {
                         <label className={styles.label}>Brand</label>
                         <select
                             {...register("brandId", { required: "Brand is required" })}
-                            className={styles.input}
-                            style={{ background: 'rgba(255, 255, 255, 0.05)', color: '#fff' }}
+                            className={styles.select}
                         >
-                            <option value="" style={{ background: '#1a1a2e' }}>Select a Brand</option>
+                            <option value="">Select a Brand</option>
                             {brands.map((brand) => (
-                                <option key={brand._id} value={brand._id} style={{ background: '#1a1a2e' }}>
+                                <option key={brand._id} value={brand._id}>
                                     {brand.brandName}
                                 </option>
                             ))}
