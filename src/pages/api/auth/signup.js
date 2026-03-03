@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 
     try {
         const db = await connectToDatabase();
-        const usersCollection = db.collection("users");
+        const usersCollection = db.collection("admin_users");
 
         // Check if user already exists (by email or shopId)
         const existingUser = await usersCollection.findOne({
