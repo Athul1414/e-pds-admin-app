@@ -27,25 +27,42 @@ import {
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 
+import { useDispatch } from 'react-redux';
+import { setUserSession } from '@/redux/authSlice';
+
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [loginError, setLoginError] = useState("");
     const { register, handleSubmit, formState: { errors } } = useForm();
     const router = useRouter();
+    const dispatch = useDispatch();
 
     const onSubmit = async (data) => {
         setLoading(true);
+        setLoginError("");
         try {
-            // Placeholder for login logic
-            console.log("Login data:", data);
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: data.email, password: data.password }),
+            });
 
-            // Redirect to dashboard/home after successful login
-            router.push('/brands');
+            const result = await response.json();
+
+            if (result.status === "Success") {
+                // Dispatch Redux action
+                dispatch(setUserSession(result.userSession));
+                // Redirect to dashboard/home after successful login
+                router.push('/brands');
+            } else {
+                setLoginError(result.message || "Invalid Credentials");
+            }
         } catch (error) {
             console.error("Login error:", error);
-            alert("An error occurred during login");
+            setLoginError("An error occurred during login");
         } finally {
             setLoading(false);
         }
@@ -129,6 +146,12 @@ export default function LoginPage() {
                                 Please enter your credentials to access the admin portal.
                             </Typography>
                         </Box>
+
+                        {loginError && (
+                            <Box sx={{ mb: 3, p: 2, bgcolor: '#fee2e2', color: '#b91c1c', borderRadius: 2, border: '1px solid #f87171' }}>
+                                <Typography variant="body2" fontWeight="600">{loginError}</Typography>
+                            </Box>
+                        )}
 
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
