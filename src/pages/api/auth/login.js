@@ -9,7 +9,7 @@ const handler = async (req, res) => {
   const db = await connectToDatabase();
 
   // Use aggregation pipeline to fetch user with populated roles
-  const users = await db.collection("erp_users").aggregate([
+  const users = await db.collection("admin_users").findOne([
     { $match: { email: req.body.email } },
     {
       $lookup: {
